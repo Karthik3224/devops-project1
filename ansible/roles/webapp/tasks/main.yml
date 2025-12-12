@@ -1,0 +1,29 @@
+- name: Install Python3 and pip
+  yum:
+    name:
+      - python3
+      - python3-pip
+    state: present
+
+- name: Install Flask
+  pip:
+    name: Flask
+
+- name: Copy application files
+  copy:
+    src: ../../../application/
+    dest: /home/ec2-user/app/
+    owner: ec2-user
+    group: ec2-user
+    mode: 0755
+
+- name: Create systemd service
+  template:
+    src: app.service.j2
+    dest: /etc/systemd/system/app.service
+
+- name: Start Flask application service
+  systemd:
+    name: app
+    state: started
+    enabled: yes
